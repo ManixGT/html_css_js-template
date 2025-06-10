@@ -27,6 +27,7 @@ form.addEventListener("submit", event => {
     };
 
     tasks.push(newTask);
+    saveTasks();
 
     addListItem(newTask);
     input.value = "";
@@ -41,6 +42,7 @@ function addListItem(task: Task) {
         saveTasks();
     });
     checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
     label.append(checkbox, task.title);
 
     item.append(label);
@@ -54,5 +56,8 @@ function saveTasks() {
 function loadTasks(): Task[] {
     const taskJSON = localStorage.getItem("TASKS");
     if (taskJSON == null) return [];
-    return JSON.parse(taskJSON);
+    return (JSON.parse(taskJSON) as Task[]).map(task => ({
+        ...task,
+        createdAt: new Date(task.createdAt)
+    }));
 };
