@@ -1,24 +1,42 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { v4 as uuidV4 } from "uuid";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const list = document.querySelector<HTMLUListElement>("#list");
+const form = document.querySelector("#new-task-form") as HTMLFormElement || null;
+const input = document.querySelector<HTMLInputElement>("#new-task-title");
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+type Task = {
+    id: string,
+    title: string,
+    completed: boolean,
+    createdAt: Date
+};
+
+form.addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (input?.value == "" || input?.value == null) return;
+
+    const newTask: Task = {
+        id: uuidV4(),
+        title: input.value,
+        completed: false,
+        createdAt: new Date(),
+    };
+
+    addListItem(newTask);
+});
+
+function addListItem(task: Task) {
+    const item = document.createElement("li");
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+
+    checkbox.type = "checkbox";
+    label.append(checkbox, task.title);
+    console.log(label, "label");
+    console.log(item, "item");
+
+    item.append(label);
+    list?.append(item);
+
+};  
